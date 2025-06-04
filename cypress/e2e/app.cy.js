@@ -27,7 +27,7 @@ class RegisterForm {
 const registerForm = new RegisterForm
 const colors = {
   errors: 'rgb(220, 53, 69)',
-  success: ''
+  success: 'rgb(25, 135, 84)'
 }
 describe('Image Registration', () => {
   describe('Submitting an image with invalid inputs', () => {
@@ -69,4 +69,29 @@ describe('Image Registration', () => {
 
 
   }) 
+  describe('Submitting an image with valid inputs using enter key', () => {
+    after(() => {
+      cy.clearAllLocalStorage()
+    })
+    const input = {
+      title: 'Alien BR',
+      url: ''
+    }
+
+    it('Given I am on the image registration page', () => {
+      cy.visit('/')
+    })
+
+    it(`When I enter ${input.title} in the title field`, () => {
+      registerForm.typeTitle(`${input.title}{enter}`)
+    })
+
+    it('Then I should see a check icon in the title field', () => {
+      registerForm.elements.titleInput().should(([element]) => {
+        const styles = window.getComputedStyle(element)
+        const border = styles.getPropertyValue('border-right-color')
+        assert.strictEqual(border, colors.success)
+      })
+    })
+  })
 })
