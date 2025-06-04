@@ -70,12 +70,9 @@ describe('Image Registration', () => {
 
   }) 
   describe('Submitting an image with valid inputs using enter key', () => {
-    after(() => {
-      cy.clearAllLocalStorage()
-    })
     const input = {
       title: 'Alien BR',
-      url: ''
+      url: 'https://cdn.mos.cms.futurecdn.net/eM9EvWyDxXcnQTTyH8c8p5-1200-80.jpg'
     }
 
     it('Given I am on the image registration page', () => {
@@ -92,6 +89,43 @@ describe('Image Registration', () => {
         const border = styles.getPropertyValue('border-right-color')
         assert.strictEqual(border, colors.success)
       })
+    })
+
+    it(`When I enter "${input.url}" in the URL field`, () => {
+      registerForm.typeUrl(`${input.url}`)
+    })
+
+    it("Then I should see a check icon in the imageUrl field", () => {
+      registerForm.elements.imageUrlInput().should(([element]) => {
+        const styles = window.getComputedStyle(element)
+        const border = styles.getPropertyValue('border-right-color')
+        assert.strictEqual(border, colors.success)
+      })
+    })
+
+    it("Then I can hit enter to submit the form", () => {
+      registerForm.elements.submitBtn().click()
+    })
+
+    it("And the list of registered images should be updated with the new item", () => {
+      cy.contains(input.title)
+    })
+    
+    it("And the new item should be stored in the localStorage", () => {
+      cy.window().then((window) => {
+        const storedData = window.localStorage.getItem("tdd-ew-db");
+        expect(storedData).to.not.be.null
+
+        const parsedData = JSON.parse(storedData)
+        const imageExists = parsedData.some(item => item.imageUrl == input.url)
+
+        expect(imageExists).to.be.true
+      })
+    })
+
+    it("Then The inputs should be cleared", () => {
+      registerForm.elements.titleInput().should("have.value", "")
+      registerForm.elements.imageUrlInput().should("have.value", "")
     })
   })
 })
