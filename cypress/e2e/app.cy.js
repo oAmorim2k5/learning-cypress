@@ -1,6 +1,6 @@
 import assert from 'assert'
-import { url } from 'inspector';
-import { parse } from 'path';
+
+const baseUrl = "https://erickwendel.github.io/vanilla-js-web-app-example/"
 
 class RegisterForm {
   elements = {
@@ -47,7 +47,7 @@ describe('Image Registration', () => {
       url: ''
     }
     it('Given I am on the image registration page', () => {
-      cy.visit('/')
+      cy.visit(baseUrl)
     })
 
     it(`When I enter "${input.title}" in the title field`, () => {
@@ -83,7 +83,7 @@ describe('Image Registration', () => {
     })
 
     it('Given I am on the image registration page', () => {
-      cy.visit('/')
+      cy.visit(baseUrl)
     })
 
     it(`When I enter ${input.title} in the title field`, () => {
@@ -140,7 +140,7 @@ describe('Image Registration', () => {
       cy.clearAllLocalStorage()
     })
     it('Given I am on the image registration page', () => {
-      cy.visit('/')
+      cy.visit(baseUrl)
     })
 
     it(`Then I have entered "${input.title}" in the title field`, () => {
@@ -177,28 +177,35 @@ describe('Image Registration', () => {
     })
   })
   describe('Refreshing the page after submitting an image clicking in the submit button', () => {
-
+    after(() => {
+      cy.clearAllLocalStorage()
+    })
+    
     it('Given I am on the image registration page', () => {
-      cy.visit('/')
+      cy.visit(baseUrl)
     })
 
     it('Then I have submitted an image by clicking the submit button', () => {
       registerForm.typeTitle(input.title)
       registerForm.typeUrl(input.url)
       registerForm.elements.submitBtn().click()
-      if(input.title.trim() !== "" && input.url.trim() !== ""){
+      /*if(input.title.trim() !== "" && input.url.trim() !== ""){
         urls.push({ chaveTitle: input.title, chaveUrl: input.url })
-      }
+      }*/
 
     })
 
     it('When I refresh the page', () => {
-      cy.reload()
-      urls.forEach(item =>{
+      cy.window().then((window) => {
+        cy.window().reload(true)
+      })
+
+      /*urls.forEach(item =>{
         registerForm.typeTitle(item.chaveTitle)
         registerForm.typeUrl(item.chaveUrl)
         registerForm.elements.submitBtn().click()
       })
+        */
     })
 
     it('Then I should still see the submitted image in the list of registered images', () => {
