@@ -197,7 +197,7 @@ describe('Image Registration', () => {
       urls.forEach(item =>{
         registerForm.typeTitle(item.chaveTitle)
         registerForm.typeUrl(item.chaveUrl)
-        registerForm.elements.submitBtn().click
+        registerForm.elements.submitBtn().click()
       })
     })
 

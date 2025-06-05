@@ -1,6 +1,6 @@
 Feature: Image Registration
 
-  Scenario: Submitting an image with invalid inputs
+  FEITO - Scenario: Submitting an image with invalid inputs
     Given I am on the image registration page
     When I enter "" in the title field
     Then I enter "" in the URL field
@@ -9,7 +9,7 @@ Feature: Image Registration
     And I should see "Please type a valid URL" message above the imageUrl field
     And I should see an exclamation icon in the title and URL fields
 
-  Scenario: Submitting an image with valid inputs using enter key
+  FEITO - Scenario: Submitting an image with valid inputs using enter key
     Given I am on the image registration page
     When I enter "Alien BR" in the title field
     Then I should see a check icon in the title field
@@ -20,7 +20,7 @@ Feature: Image Registration
     And the new item should be stored in the localStorage
     Then The inputs should be cleared
 
-  Scenario: Submitting an image and updating the list
+  FEITO - Scenario: Submitting an image and updating the list
     Given I am on the image registration page
     Then I have entered "BR Alien" in the title field
     Then I have entered "https://cdn.mos.cms.futurecdn.net/eM9EvWyDxXcnQTTyH8c8p5-1200-80.jpg" in the URL field
