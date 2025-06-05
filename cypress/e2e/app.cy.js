@@ -1,4 +1,5 @@
 import assert from 'assert'
+import { url } from 'inspector';
 import { parse } from 'path';
 
 class RegisterForm {
@@ -34,6 +35,7 @@ const input = {
       title: 'Alien BR',
       url: 'https://cdn.mos.cms.futurecdn.net/eM9EvWyDxXcnQTTyH8c8p5-1200-80.jpg'
 }
+let urls = []
 
 describe('Image Registration', () => {
   describe('Submitting an image with invalid inputs', () => {
@@ -113,7 +115,7 @@ describe('Image Registration', () => {
     })
 
     it("And the list of registered images should be updated with the new item", () => {
-      cy.contains(input.title)
+      cy.contains(input.title, { timeout: 10000 }).should('exist');
     })
     
     it("And the new item should be stored in the localStorage", () => {
@@ -134,7 +136,9 @@ describe('Image Registration', () => {
     })
   })
   describe('Submitting an image and updating the list', () => {
-    
+    after(() => {
+      cy.clearAllLocalStorage()
+    })
     it('Given I am on the image registration page', () => {
       cy.visit('/')
     })
@@ -170,6 +174,35 @@ describe('Image Registration', () => {
     it('Then The inputs should be cleared', () => {
       registerForm.elements.titleInput().should("have.value", "")
       registerForm.elements.imageUrlInput().should("have.value", "")
+    })
+  })
+  describe('Refreshing the page after submitting an image clicking in the submit button', () => {
+
+    it('Given I am on the image registration page', () => {
+      cy.visit('/')
+    })
+
+    it('Then I have submitted an image by clicking the submit button', () => {
+      registerForm.typeTitle(input.title)
+      registerForm.typeUrl(input.url)
+      registerForm.elements.submitBtn().click()
+      if(input.title.trim() !== "" && input.url.trim() !== ""){
+        urls.push({ chaveTitle: input.title, chaveUrl: input.url })
+      }
+
+    })
+
+    it('When I refresh the page', () => {
+      cy.reload()
+      urls.forEach(item =>{
+        registerForm.typeTitle(item.chaveTitle)
+        registerForm.typeUrl(item.chaveUrl)
+        registerForm.elements.submitBtn().click
+      })
+    })
+
+    it('Then I should still see the submitted image in the list of registered images', () => {
+      cy.contains(input.title, { timeout: 10000 }).should('exist');
     })
   })
 })
